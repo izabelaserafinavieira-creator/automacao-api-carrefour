@@ -18,7 +18,7 @@ Neste projeto o Jest é responsável por:
 
 Os testes Jest fazem chamadas HTTP diretamente à API usando o **Axios** (via camada de serviço em `services/`), sem depender do Postman.
 
-Além dos testes de integração contra a API real, o projeto inclui testes de resiliência que usam `jest.spyOn` para mockar o Axios e simular condições de falha impossíveis de provocar na instância pública: erros 5xx (500, 503) e falhas de rede (timeout, ECONNREFUSED).
+Além dos testes de integração contra a API real, o projeto inclui testes de resiliência que usam `jest.spyOn` para mockar o Axios e simular condições de falha impossíveis de provocar na instância pública: erros 5xx (500, 503), rate limiting (429) e falhas de rede (timeout, ECONNREFUSED).
 
 ### Postman
 Postman é a ferramenta de design e documentação de coleções de requisições HTTP.
@@ -98,6 +98,12 @@ automacao-api-usuarios/
 ---
 
 ## Casos de Teste Cobertos
+
+### POST /login
+| Cenário | Status Esperado |
+|---------|----------------|
+| Credenciais válidas retornam token JWT | 200 |
+| Credenciais inválidas são rejeitadas | 401 |
 
 ### POST /usuarios
 | Cenário | Status Esperado |
