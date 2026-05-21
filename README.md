@@ -92,8 +92,8 @@ automacao-api-usuarios/
 | GET    | /usuarios     | Listar usuários       | Não      | getUsuarios.test.js      |
 | POST   | /usuarios     | Cadastrar usuário     | Não      | criarUsuario.test.js     |
 | GET    | /usuarios/:id | Buscar por ID         | Não      | getUsuarioById.test.js   |
-| PUT    | /usuarios/:id | Editar usuário        | Não      | updateUsuario.test.js    |
-| DELETE | /usuarios/:id | Excluir usuário       | Não      | deleteUsuario.test.js    |
+| PUT    | /usuarios/:id | Editar usuário        | **Sim**  | updateUsuario.test.js    |
+| DELETE | /usuarios/:id | Excluir usuário       | **Sim**  | deleteUsuario.test.js    |
 
 ---
 
