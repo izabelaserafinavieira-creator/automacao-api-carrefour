@@ -129,8 +129,6 @@ automacao-api-usuarios/
 | ID inexistente — upsert cria novo usuário | 201 |
 | Email já em uso por outro usuário | 400 |
 
-> **Nota:** a instância pública do ServeRest não exige autenticação para PUT/DELETE. Requisições sem token são aceitas normalmente. `PUT` com ID inexistente realiza upsert (cria o registro) em vez de retornar erro.
-
 ### DELETE /usuarios/:id
 | Cenário | Status Esperado |
 |---------|----------------|
@@ -139,8 +137,6 @@ automacao-api-usuarios/
 | ID inexistente sem token | 200 |
 
 ### Falhas de Rede e Erros de Servidor (simulados via mock)
-
-> Esses testes **não fazem chamadas reais** à API. O Axios é mockado com `jest.spyOn` para injetar erros que não podem ser provocados na instância pública do ServeRest.
 
 | Cenário | Status Esperado |
 |---------|----------------|
