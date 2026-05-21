@@ -142,14 +142,14 @@ automacao-api-usuarios/
 
 > Esses testes **não fazem chamadas reais** à API. O Axios é mockado com `jest.spyOn` para injetar erros que não podem ser provocados na instância pública do ServeRest.
 
-| Cenário | Tipo | Erro Simulado |
-|---------|------|---------------|
-| Erro interno ao listar usuários | 5xx | 500 Internal Server Error |
-| Serviço indisponível ao buscar por ID | 5xx | 503 Service Unavailable |
-| Erro interno ao criar usuário | 5xx | 500 Internal Server Error |
-| Timeout ao realizar login | Rede | ECONNABORTED (sem `response`) |
-| Falha de rede ao cadastrar usuário | Rede | ECONNREFUSED (sem `response`) |
-| Falha de rede ao excluir usuário | Rede | ECONNREFUSED (sem `response`) |
+| Cenário | Status Esperado |
+|---------|----------------|
+| Erro interno ao listar usuários | 500 |
+| Serviço indisponível ao buscar por ID | 503 |
+| Erro interno ao criar usuário | 500 |
+| Timeout ao realizar login | ECONNABORTED |
+| Falha de rede ao cadastrar usuário | ECONNREFUSED |
+| Falha de rede ao excluir usuário | ECONNREFUSED |
 
 ---
 
