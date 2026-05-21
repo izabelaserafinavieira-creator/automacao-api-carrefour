@@ -68,7 +68,7 @@ automacao-api-usuarios/
 │   ├── helpers/
 │   │   └── auth.helper.js                # Helper para obter e cachear token JWT
 │   ├── network/
-│   │   └── networkFailure.test.js        # Falhas de rede e erros 5xx (simulados via mock)
+│   │   └── networkFailure.test.js        # Falhas de rede e erros (simulados via mock)
 │   └── usuarios/
 │       ├── criarUsuario.test.js          # POST /usuarios
 │       ├── deleteUsuario.test.js         # DELETE /usuarios/:id
@@ -92,8 +92,8 @@ automacao-api-usuarios/
 | GET    | /usuarios     | Listar usuários       | Não      | getUsuarios.test.js      |
 | POST   | /usuarios     | Cadastrar usuário     | Não      | criarUsuario.test.js     |
 | GET    | /usuarios/:id | Buscar por ID         | Não      | getUsuarioById.test.js   |
-| PUT    | /usuarios/:id | Editar usuário        | **Sim**  | updateUsuario.test.js    |
-| DELETE | /usuarios/:id | Excluir usuário       | **Sim**  | deleteUsuario.test.js    |
+| PUT    | /usuarios/:id | Editar usuário        | Não      | updateUsuario.test.js    |
+| DELETE | /usuarios/:id | Excluir usuário       | Não      | deleteUsuario.test.js    |
 
 ---
 
