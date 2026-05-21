@@ -68,7 +68,7 @@ automacao-api-usuarios/
 │   ├── helpers/
 │   │   └── auth.helper.js                # Helper para obter e cachear token JWT
 │   ├── network/
-│   │   └── networkFailure.test.js        # Falhas de rede e erros (simulados via mock)
+│   │   └── networkFailure.test.js        # Simulados via mock
 │   └── usuarios/
 │       ├── criarUsuario.test.js          # POST /usuarios
 │       ├── deleteUsuario.test.js         # DELETE /usuarios/:id
@@ -102,59 +102,58 @@ automacao-api-usuarios/
 ### POST /login
 | Cenário | Status Esperado |
 |---------|----------------|
-| Credenciais válidas retornam token JWT | 200 |
-| Credenciais inválidas são rejeitadas | 401 |
+| Login com email e senha corretos retorna token JWT | 200 |
+| Login com email ou senha incorretos é rejeitado | 401 |
 
 ### POST /usuarios
 | Cenário | Status Esperado |
 |---------|----------------|
-| Cadastro com dados válidos | 201 |
-| Email já cadastrado | 400 |
-| Sem campo `nome` | 400 |
-| Sem campo `email` | 400 |
-| Email inválido (sem @) | 400 |
-| Sem campo `password` | 400 |
-| Sem campo `administrador` | 400 |
+| Criação com todos os campos preenchidos corretamente | 201 |
+| Tentativa de cadastro com email já existente na base | 400 |
+| Envio do formulário sem o campo `nome` | 400 |
+| Envio do formulário sem o campo `email` | 400 |
+| Envio com `email` em formato inválido (sem @) | 400 |
+| Envio do formulário sem o campo `password` | 400 |
+| Envio do formulário sem o campo `administrador` | 400 |
 
 ### GET /usuarios
 | Cenário | Status Esperado |
 |---------|----------------|
-| Listar todos os usuários | 200 |
-| Campos obrigatórios presentes em cada usuário | 200 |
-| Filtrar por `administrador=true` | 200 |
-| Filtrar por `administrador=false` | 200 |
+| Listagem retorna total de registros e array de usuários | 200 |
+| Cada usuário retornado possui todos os campos obrigatórios | 200 |
+| Filtro `?administrador=true` retorna somente administradores | 200 |
+| Filtro `?administrador=false` retorna somente usuários comuns | 200 |
 
 ### GET /usuarios/:id
 | Cenário | Status Esperado |
 |---------|----------------|
-| Buscar por ID válido | 200 |
-| ID inexistente/inválido | 400 |
+| Busca com ID existente retorna os dados do usuário | 200 |
+| Busca com ID inexistente ou inválido retorna erro | 400 |
 
 ### PUT /usuarios/:id
 | Cenário | Status Esperado |
 |---------|----------------|
-| Editar com token JWT válido | 200 |
-| ID inexistente — upsert cria novo usuário | 201 |
-| Email já em uso por outro usuário | 400 |
+| Atualização com token JWT válido altera os dados | 200 |
+| Atualização com ID inexistente cria um novo usuário (upsert) | 201 |
+| Atualização com email já utilizado por outro usuário é rejeitada | 400 |
 
 ### DELETE /usuarios/:id
 | Cenário | Status Esperado |
 |---------|----------------|
-| Excluir com token JWT válido | 200 |
-| ID inexistente (nenhum registro excluído) | 200 |
-| ID inexistente sem token | 200 |
+| Exclusão com token JWT válido remove o usuário | 200 |
+| Exclusão com ID inexistente retorna "nenhum registro excluído" | 200 |
+| Exclusão sem token com ID inexistente retorna "nenhum registro excluído" | 200 |
 
 ### Falhas de Rede e Erros de Servidor (simulados via mock)
-
 | Cenário | Status Esperado |
 |---------|----------------|
-| Erro interno ao listar usuários | 500 |
-| Serviço indisponível ao buscar por ID | 503 |
-| Erro interno ao criar usuário | 500 |
-| Rate limit excedido (100 req/min) | 429 |
-| Timeout ao realizar login | ECONNABORTED |
-| Falha de rede ao cadastrar usuário | ECONNREFUSED |
-| Falha de rede ao excluir usuário | ECONNREFUSED |
+| Servidor retorna erro interno ao listar usuários | 500 |
+| Servidor retorna serviço indisponível ao buscar usuário por ID | 503 |
+| Servidor retorna erro interno ao criar usuário | 500 |
+| Limite de 100 requisições por minuto é ultrapassado | 429 |
+| Servidor não responde dentro do prazo ao realizar login | ECONNABORTED |
+| Servidor inacessível ao tentar cadastrar usuário | ECONNREFUSED |
+| Servidor inacessível ao tentar excluir usuário | ECONNREFUSED |
 
 ---
 
