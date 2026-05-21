@@ -1,0 +1,484 @@
+{
+  "info": {
+    "_postman_id": "1187f9b7-689b-4848-ae10-b6e643991d21",
+    "name": "ServeRest - Usuários",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "15809145"
+  },
+  "item": [
+    {
+      "name": "Usuários",
+      "item": [
+        {
+          "name": "POST Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200 - Login realizado com sucesso\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response contém token de autorização\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.have.property(\"authorization\");",
+                  "    pm.expect(json.authorization).to.be.a(\"string\").and.not.empty;",
+                  "    pm.collectionVariables.set(\"token\", json.authorization);",
+                  "});",
+                  "",
+                  "pm.test(\"Token possui prefixo Bearer\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.authorization).to.include(\"Bearer \");",
+                  "});",
+                  "",
+                  "// Cenário de falha: Credenciais inválidas retornam 401",
+                  "pm.test(\"Credenciais inválidas retornam 401\", function (done) {",
+                  "    pm.sendRequest({",
+                  "        url: pm.collectionVariables.get(\"baseUrl\") + \"/login\",",
+                  "        method: \"POST\",",
+                  "        header: { \"Content-Type\": \"application/json\" },",
+                  "        body: { mode: \"raw\", raw: JSON.stringify({ email: \"invalido@qa.com\", password: \"errado\" }) }",
+                  "    }, function (err, res) {",
+                  "        pm.expect(res).to.have.status(401);",
+                  "        done();",
+                  "    });",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"fulano@qa.com\",\n    \"password\": \"teste\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Cadastrar Usuário",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Cenário de sucesso: Status 201 - Cadastro",
+                  "pm.test(\"Status 201 - Usuário cadastrado com sucesso\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Response tem mensagem de sucesso\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.message).to.eql(\"Cadastro realizado com sucesso\");",
+                  "});",
+                  "",
+                  "pm.test(\"Response contém _id do usuário criado\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.have.property(\"_id\");",
+                  "    pm.expect(json._id).to.be.a(\"string\").and.not.empty;",
+                  "    pm.collectionVariables.set(\"userId\", json._id);",
+                  "});",
+                  "",
+                  "pm.test(\"Content-Type é application/json\", function () {",
+                  "    pm.response.to.have.header(\"Content-Type\");",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+                  "});",
+                  "",
+                  "pm.test(\"Tempo de resposta menor que 3000ms\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);",
+                  "});",
+                  "",
+                  "// Cenário de falha: Email duplicado retorna 400",
+                  "pm.test(\"Email duplicado retorna 400\", function (done) {",
+                  "    const body = pm.request.body.raw;",
+                  "    pm.sendRequest({",
+                  "        url: pm.collectionVariables.get(\"baseUrl\") + \"/usuarios\",",
+                  "        method: \"POST\",",
+                  "        header: { \"Content-Type\": \"application/json\" },",
+                  "        body: { mode: \"raw\", raw: body }",
+                  "    }, function (err, res) {",
+                  "        pm.expect(res).to.have.status(400);",
+                  "        pm.expect(res.json().message).to.eql(\"Este email já está sendo usado\");",
+                  "        done();",
+                  "    });",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nome\": \"Usuário Teste {{$timestamp}}\",\n    \"email\": \"usuario{{$timestamp}}@qa.com.br\",\n    \"password\": \"teste123\",\n    \"administrador\": \"true\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/usuarios",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "usuarios"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Listar Usuários",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Cenário de sucesso: Status 200 - Listagem",
+                  "pm.test(\"Status 200 - Listagem realizada com sucesso\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response contém quantidade de usuários\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.have.property(\"quantidade\");",
+                  "    pm.expect(json.quantidade).to.be.a(\"number\");",
+                  "});",
+                  "",
+                  "pm.test(\"Response contém array de usuários\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.have.property(\"usuarios\");",
+                  "    pm.expect(json.usuarios).to.be.an(\"array\");",
+                  "});",
+                  "",
+                  "pm.test(\"Quantidade bate com o tamanho do array\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.quantidade).to.eql(json.usuarios.length);",
+                  "});",
+                  "",
+                  "pm.test(\"Cada usuário tem os campos obrigatórios\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.usuarios.length).to.be.above(0);",
+                  "    json.usuarios.forEach(function(usuario) {",
+                  "        pm.expect(usuario).to.have.property(\"nome\");",
+                  "        pm.expect(usuario).to.have.property(\"email\");",
+                  "        pm.expect(usuario).to.have.property(\"password\");",
+                  "        pm.expect(usuario).to.have.property(\"administrador\");",
+                  "        pm.expect(usuario).to.have.property(\"_id\");",
+                  "    });",
+                  "});",
+                  "",
+                  "pm.test(\"Content-Type é application/json\", function () {",
+                  "    pm.response.to.have.header(\"Content-Type\");",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+                  "});",
+                  "",
+                  "pm.test(\"Tempo de resposta menor que 3000ms\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/usuarios",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "usuarios"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Buscar Usuário por ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Cenário de sucesso: Status 200 - Busca por ID",
+                  "pm.test(\"Status 200 - Usuário encontrado com sucesso\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response contém _id correto\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.have.property(\"_id\");",
+                  "    pm.expect(json._id).to.eql(pm.collectionVariables.get(\"userId\"));",
+                  "});",
+                  "",
+                  "pm.test(\"Response contém campo nome\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.have.property(\"nome\");",
+                  "    pm.expect(json.nome).to.be.a(\"string\").and.not.empty;",
+                  "});",
+                  "",
+                  "pm.test(\"Response contém campo email\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.have.property(\"email\");",
+                  "    pm.expect(json.email).to.be.a(\"string\").and.not.empty;",
+                  "});",
+                  "",
+                  "pm.test(\"Response contém campo administrador\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.have.property(\"administrador\");",
+                  "    pm.expect([\"true\", \"false\"]).to.include(json.administrador);",
+                  "});",
+                  "",
+                  "pm.test(\"Content-Type é application/json\", function () {",
+                  "    pm.response.to.have.header(\"Content-Type\");",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+                  "});",
+                  "",
+                  "pm.test(\"Tempo de resposta menor que 3000ms\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);",
+                  "});",
+                  "",
+                  "// Cenário de falha: ID inválido via sendRequest",
+                  "pm.test(\"ID inválido retorna 400 - Usuário não encontrado\", function (done) {",
+                  "    pm.sendRequest({",
+                  "        url: pm.collectionVariables.get(\"baseUrl\") + \"/usuarios/idInvalidoXYZ123\",",
+                  "        method: \"GET\"",
+                  "    }, function (err, res) {",
+                  "        pm.expect(res).to.have.status(400);",
+                  "        const json = res.json();",
+                  "        pm.expect(json.message).to.eql(\"Usuário não encontrado\");",
+                  "        done();",
+                  "    });",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/usuarios/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "usuarios",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT Editar Usuário",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Cenário de sucesso: Status 200 - Edição",
+                  "pm.test(\"Status 200 - Usuário editado com sucesso\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response tem mensagem de sucesso\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.message).to.eql(\"Registro alterado com sucesso\");",
+                  "});",
+                  "",
+                  "pm.test(\"Content-Type é application/json\", function () {",
+                  "    pm.response.to.have.header(\"Content-Type\");",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+                  "});",
+                  "",
+                  "pm.test(\"Tempo de resposta menor que 3000ms\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);",
+                  "});",
+                  "",
+                  "// Nota: a instância pública do ServeRest não exige autenticação para PUT.",
+                  "// O cenário de 401 não se aplica a este ambiente."
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [""]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nome\": \"Usuário Editado {{$timestamp}}\",\n    \"email\": \"editado{{$timestamp}}@qa.com.br\",\n    \"password\": \"novaSenha123\",\n    \"administrador\": \"false\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/usuarios/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "usuarios",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE Excluir Usuário",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Cenário de sucesso: Status 200 - Exclusão",
+                  "pm.test(\"Status 200 - Usuário excluído com sucesso\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response tem mensagem de registro excluído\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.message).to.eql(\"Registro excluído com sucesso\");",
+                  "});",
+                  "",
+                  "pm.test(\"Content-Type é application/json\", function () {",
+                  "    pm.response.to.have.header(\"Content-Type\");",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+                  "});",
+                  "",
+                  "pm.test(\"Tempo de resposta menor que 3000ms\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);",
+                  "});",
+                  "",
+                  "// Cenário de falha: ID inexistente retorna 200 com mensagem Nenhum registro excluído",
+                  "pm.test(\"ID inexistente retorna 200 com 'Nenhum registro excluído'\", function (done) {",
+                  "    pm.sendRequest({",
+                  "        url: pm.collectionVariables.get(\"baseUrl\") + \"/usuarios/idInvalidoXYZ123\",",
+                  "        method: \"DELETE\",",
+                  "        header: { \"Authorization\": pm.collectionVariables.get(\"token\") }",
+                  "    }, function (err, res) {",
+                  "        pm.expect(res).to.have.status(200);",
+                  "        const json = res.json();",
+                  "        pm.expect(json.message).to.eql(\"Nenhum registro excluído\");",
+                  "        done();",
+                  "    });",
+                  "});",
+                  "",
+                  "// Nota: a instância pública do ServeRest não exige autenticação para DELETE.",
+                  "// O cenário de 401 não se aplica a este ambiente.",
+                  "",
+                  "// Limpa a variável userId após exclusão",
+                  "pm.collectionVariables.unset(\"userId\");"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/usuarios/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "usuarios",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "if (!pm.collectionVariables.get(\"baseUrl\")) {",
+          "    pm.collectionVariables.set(\"baseUrl\", \"https://serverest.dev\");",
+          "}"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://serverest.dev"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "userId",
+      "value": ""
+    }
+  ]
+}

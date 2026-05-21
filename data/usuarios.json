@@ -1,0 +1,39 @@
+{
+  "credenciais": {
+    "admin": {
+      "email": "fulano@qa.com",
+      "password": "teste"
+    }
+  },
+  "payloads": {
+    "usuarioValido": {
+      "nome": "Usuario Automacao",
+      "password": "teste123",
+      "administrador": "true"
+    },
+    "usuarioAtualizado": {
+      "nome": "Usuario Atualizado",
+      "password": "atualizado123",
+      "administrador": "false"
+    },
+    "usuarioSemNome": {
+      "password": "teste123",
+      "administrador": "true"
+    },
+    "usuarioSemEmail": {
+      "nome": "Sem Email",
+      "password": "teste123",
+      "administrador": "true"
+    },
+    "usuarioEmailInvalido": {
+      "nome": "Email Invalido",
+      "email": "email-invalido-sem-arroba",
+      "password": "teste123",
+      "administrador": "true"
+    },
+    "usuarioSemPassword": {
+      "nome": "Sem Password",
+      "administrador": "true"
+    }
+  }
+}

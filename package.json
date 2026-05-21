@@ -1,0 +1,28 @@
+{
+  "name": "automacao-api-usuarios",
+  "version": "1.0.0",
+  "description": "Automação de testes do módulo de Usuários da API ServeRest, cobrindo todos os endpoints CRUD com cenários de sucesso, falha e autenticação JWT.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --runInBand --forceExit",
+    "test:coverage": "jest --runInBand --forceExit --coverage",
+    "newman:usuarios": "newman run collections/usuarios/usuarios.postman_collection.json -r cli,html --reporter-html-export reports/usuarios.html"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testTimeout": 30000,
+    "verbose": true,
+    "setupFilesAfterEnv": ["./tests/setup.js"],
+    "coverageDirectory": "reports/coverage",
+    "coverageReporters": ["html", "text", "lcov"],
+    "collectCoverageFrom": [
+      "services/**/*.js"
+    ]
+  },
+  "devDependencies": {
+    "axios": "^1.16.1",
+    "jest": "^30.4.2",
+    "newman": "^6.2.2",
+    "newman-reporter-html": "^1.0.5"
+  }
+}
