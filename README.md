@@ -18,6 +18,8 @@ Neste projeto o Jest é responsável por:
 
 Os testes Jest fazem chamadas HTTP diretamente à API usando o **Axios** (via camada de serviço em `services/`), sem depender do Postman.
 
+Além dos testes de integração contra a API real, o projeto inclui testes de resiliência que usam `jest.spyOn` para mockar o Axios e simular condições de falha impossíveis de provocar na instância pública: erros 5xx (500, 503) e falhas de rede (timeout, ECONNREFUSED).
+
 ### Postman
 Postman é a ferramenta de design e documentação de coleções de requisições HTTP.
 
@@ -65,6 +67,8 @@ automacao-api-usuarios/
 │   ├── setup.js                          # Interceptadores Axios: log de requisições e mascaramento de dados sensíveis
 │   ├── helpers/
 │   │   └── auth.helper.js                # Helper para obter e cachear token JWT
+│   ├── network/
+│   │   └── networkFailure.test.js        # Falhas de rede e erros 5xx (simulados via mock)
 │   └── usuarios/
 │       ├── criarUsuario.test.js          # POST /usuarios
 │       ├── deleteUsuario.test.js         # DELETE /usuarios/:id
@@ -133,6 +137,19 @@ automacao-api-usuarios/
 | Excluir com token JWT válido | 200 |
 | ID inexistente (nenhum registro excluído) | 200 |
 | ID inexistente sem token | 200 |
+
+### Falhas de Rede e Erros de Servidor (simulados via mock)
+
+> Esses testes **não fazem chamadas reais** à API. O Axios é mockado com `jest.spyOn` para injetar erros que não podem ser provocados na instância pública do ServeRest.
+
+| Cenário | Tipo | Erro Simulado |
+|---------|------|---------------|
+| Erro interno ao listar usuários | 5xx | 500 Internal Server Error |
+| Serviço indisponível ao buscar por ID | 5xx | 503 Service Unavailable |
+| Erro interno ao criar usuário | 5xx | 500 Internal Server Error |
+| Timeout ao realizar login | Rede | ECONNABORTED (sem `response`) |
+| Falha de rede ao cadastrar usuário | Rede | ECONNREFUSED (sem `response`) |
+| Falha de rede ao excluir usuário | Rede | ECONNREFUSED (sem `response`) |
 
 ---
 
