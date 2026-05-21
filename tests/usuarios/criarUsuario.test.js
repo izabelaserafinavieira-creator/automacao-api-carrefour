@@ -230,4 +230,33 @@ describe('POST /usuarios - Cadastrar Usuário', () => {
       throw new Error('API retornou resposta inesperada para payload sem password - era esperado status 400');
     }
   });
+
+  // ----------------------------------------------------------
+  // [FALHA] Payload enviado sem o campo "administrador"
+  // Campo obrigatório conforme especificação da API
+  // A API deve informar qual campo está faltando
+  // ----------------------------------------------------------
+  test('400 - Deve rejeitar cadastro sem campo administrador', async () => {
+    expect.assertions(2);
+    const payload = {
+      ...testData.payloads.usuarioSemAdministrador,
+      email: `semadmin${Date.now()}@qa.com.br`,
+    };
+    let errorCaught = false;
+
+    try {
+      await usuariosService.createUsuario(payload);
+    } catch (error) {
+      if (!error.response) throw error;
+      if (!errorCaught) {
+        errorCaught = true;
+        expect(error.response.status).toBe(400);
+        expect(error.response.data.administrador).toBe('administrador é obrigatório');
+      }
+    }
+
+    if (!errorCaught) {
+      throw new Error('API retornou resposta inesperada para payload sem administrador - era esperado status 400');
+    }
+  });
 });

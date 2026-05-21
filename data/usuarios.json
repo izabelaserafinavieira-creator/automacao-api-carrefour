@@ -34,6 +34,10 @@
     "usuarioSemPassword": {
       "nome": "Sem Password",
       "administrador": "true"
+    },
+    "usuarioSemAdministrador": {
+      "nome": "Sem Administrador",
+      "password": "teste123"
     }
   }
 }

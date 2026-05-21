@@ -105,8 +105,10 @@ automacao-api-usuarios/
 | Cadastro com dados válidos | 201 |
 | Email já cadastrado | 400 |
 | Sem campo `nome` | 400 |
+| Sem campo `email` | 400 |
 | Email inválido (sem @) | 400 |
 | Sem campo `password` | 400 |
+| Sem campo `administrador` | 400 |
 
 ### GET /usuarios
 | Cenário | Status Esperado |
@@ -143,6 +145,7 @@ automacao-api-usuarios/
 | Erro interno ao listar usuários | 500 |
 | Serviço indisponível ao buscar por ID | 503 |
 | Erro interno ao criar usuário | 500 |
+| Rate limit excedido (100 req/min) | 429 |
 | Timeout ao realizar login | ECONNABORTED |
 | Falha de rede ao cadastrar usuário | ECONNREFUSED |
 | Falha de rede ao excluir usuário | ECONNREFUSED |

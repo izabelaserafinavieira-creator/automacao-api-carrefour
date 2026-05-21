@@ -18,6 +18,7 @@
  *   [5xx] 500 - Erro interno do servidor ao listar usuários
  *   [5xx] 503 - Serviço indisponível ao buscar usuário por ID
  *   [5xx] 500 - Erro interno do servidor ao criar usuário
+ *   [429] Rate limit excedido ao listar usuários (100 req/min)
  *   [NET] Timeout de conexão (ECONNABORTED) ao realizar login
  *   [NET] Falha de rede (ECONNREFUSED) ao cadastrar usuário
  *   [NET] Falha de rede (ECONNREFUSED) ao excluir usuário
@@ -91,6 +92,26 @@ describe('Falhas de Rede e Erros de Servidor (simulados via mock)', () => {
     } catch (error) {
       expect(error.response.status).toBe(500);
       expect(error.response.data.message).toBe('Internal Server Error');
+    }
+  });
+
+  // ----------------------------------------------------------
+  // [429] Rate limit excedido — a API aceita no máximo 100 req/min
+  // Quando o limite é ultrapassado, retorna 429 Too Many Requests.
+  // A instância pública não expõe headers de rate limit, por isso
+  // o cenário é simulado via mock.
+  // ----------------------------------------------------------
+  test('429 - Deve propagar erro de rate limit excedido', async () => {
+    expect.assertions(2);
+    jest.spyOn(axios, 'get').mockRejectedValueOnce({
+      response: { status: 429, data: { message: 'Too Many Requests' } },
+    });
+
+    try {
+      await usuariosService.getUsuarios();
+    } catch (error) {
+      expect(error.response.status).toBe(429);
+      expect(error.response.data.message).toBe('Too Many Requests');
     }
   });
 
