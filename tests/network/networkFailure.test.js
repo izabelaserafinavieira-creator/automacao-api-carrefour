@@ -15,9 +15,9 @@
  *   previsível — mesmo sem acesso ao servidor real.
  *
  * Cenários cobertos:
- *   [5xx] 500 - Erro interno do servidor ao listar usuários
- *   [5xx] 503 - Serviço indisponível ao buscar usuário por ID
- *   [5xx] 500 - Erro interno do servidor ao criar usuário
+ *   [500] Erro interno do servidor ao listar usuários
+ *   [503] Serviço indisponível ao buscar usuário por ID
+ *   [500] Erro interno do servidor ao criar usuário
  *   [429] Rate limit excedido ao listar usuários (100 req/min)
  *   [NET] Timeout de conexão (ECONNABORTED) ao realizar login
  *   [NET] Falha de rede (ECONNREFUSED) ao cadastrar usuário
@@ -36,7 +36,7 @@ describe('Falhas de Rede e Erros de Servidor (simulados via mock)', () => {
   });
 
   // ----------------------------------------------------------
-  // [5xx] Servidor retorna 500 ao listar usuários (GET /usuarios)
+  // [500] Servidor retorna 500 ao listar usuários (GET /usuarios)
   // Verifica que o serviço propaga o erro sem engolir ou alterar
   // o status code retornado pela API
   // ----------------------------------------------------------
@@ -55,7 +55,7 @@ describe('Falhas de Rede e Erros de Servidor (simulados via mock)', () => {
   });
 
   // ----------------------------------------------------------
-  // [5xx] Servidor retorna 503 ao buscar usuário por ID (GET /usuarios/:id)
+  // [503] Servidor retorna 503 ao buscar usuário por ID (GET /usuarios/:id)
   // 503 é o código típico de manutenção ou sobrecarga do servidor
   // ----------------------------------------------------------
   test('503 - Deve propagar serviço indisponível ao buscar usuário por ID', async () => {
@@ -73,7 +73,7 @@ describe('Falhas de Rede e Erros de Servidor (simulados via mock)', () => {
   });
 
   // ----------------------------------------------------------
-  // [5xx] Servidor retorna 500 ao criar usuário (POST /usuarios)
+  // [500] Servidor retorna 500 ao criar usuário (POST /usuarios)
   // Simula falha de banco de dados ou exceção não tratada no backend
   // ----------------------------------------------------------
   test('500 - Deve propagar erro interno do servidor ao criar usuário', async () => {
