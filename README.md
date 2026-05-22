@@ -1,5 +1,7 @@
 # Automação de Testes — API Usuários
 
+![CI](https://github.com/izabelaserafinavieira-creator/automacao-api-carrefour/actions/workflows/ci.yml/badge.svg)
+
 Projeto de automação de testes da API REST [ServeRest](https://serverest.dev), cobrindo o módulo de **Usuários** com testes funcionais, de falha e autenticação JWT.
 
 ---
@@ -167,10 +169,9 @@ git clone https://github.com/izabelaserafinavieira-creator/automacao-api-carrefo
 
 # Instale as dependências
 npm install
-
-# Caso o newman-reporter-html apresente conflito de peer deps
-npm install -D newman-reporter-html --legacy-peer-deps
 ```
+
+> O arquivo `.npmrc` na raiz já habilita `legacy-peer-deps=true` automaticamente, evitando conflitos de peer dependency entre o Newman 6 e o reporter HTML.
 
 ---
 
