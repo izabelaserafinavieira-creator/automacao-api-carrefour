@@ -163,7 +163,7 @@ automacao-api-usuarios/
 
 ```bash
 # Clone o repositório
-git clone [<url-do-repositorio>](https://github.com/izabelaserafinavieira-creator/automacao-api-carrefour.git)
+git clone [url-do-repositorio](https://github.com/izabelaserafinavieira-creator/automacao-api-carrefour.git)
 
 # Instale as dependências
 npm install
